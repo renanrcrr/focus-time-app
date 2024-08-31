@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform, StatusBar, Vibration } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 import { Countdown } from '../components/Countdown';
 import { RoundedButton } from '../components/RoundedButton';
 import { spacing } from '../utils/sizes';
 import { colors } from '../utils/colors';
 
+const ONE_SEC_IN_MS = 1000;
+
+const PATTERN = [
+  1 * ONE_SEC_IN_MS,
+  1 * ONE_SEC_IN_MS,
+  1 * ONE_SEC_IN_MS,
+  1 * ONE_SEC_IN_MS,
+  1 * ONE_SEC_IN_MS,
+];
+
 export const Timer = ({ focusSubject }) => {
   const [isStarted, setIsStarted] = useState(false);
   const [progress, setProgress] = useState(1);
+  const [minutes, setMinutes] = useState(0.1);
 
   return (
     <View>
@@ -16,9 +27,12 @@ export const Timer = ({ focusSubject }) => {
         <View style={styles.container}>
           <View style={styles.countdown}>
             <Countdown
+              minutes={minutes}
               isPaused={!isStarted}
               onProgress={setProgress}
-              onEnd={() => {}}
+              onEnd={() => {
+                Vibration.vibrate(PATTERN)
+              }}
             />
             <View style={{ paddingTop: spacing.xxl }}>
               <Text style={styles.title}>Focusing on:</Text>
@@ -52,6 +66,7 @@ export const Timer = ({ focusSubject }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   countdown: {
     flex: 0.5,
