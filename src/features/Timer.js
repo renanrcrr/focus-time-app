@@ -29,6 +29,13 @@ export const Timer = ({ focusSubject, clearSubject }) => {
   const [progress, setProgress] = useState(1);
   const [minutes, setMinutes] = useState(0.1);
 
+  const onEnd = (reset) => {
+    Vibration.vibrate(PATTERN);
+    setIsStarted(false);
+    setProgress(1);
+    reset();
+  };
+
   return (
     <View>
       <Text>
@@ -38,9 +45,7 @@ export const Timer = ({ focusSubject, clearSubject }) => {
               minutes={minutes}
               isPaused={!isStarted}
               onProgress={setProgress}
-              onEnd={() => {
-                Vibration.vibrate(PATTERN);
-              }}
+              onEnd={onEnd}
             />
             <View style={{ paddingTop: spacing.xxl }}>
               <Text style={styles.title}>Focusing on:</Text>
